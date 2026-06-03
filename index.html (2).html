@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benchmark Salarial Distrito 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:'Red Hat Display',sans-serif;background:#080808;height:100%;overflow:hidden;cursor:none}
+
+#cr {position:fixed;width:10px;height:10px;border-radius:50%;background:#d0095f;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .18s,height .18s,background .18s}
+#crr{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(208,9,95,.45);pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:width .24s,height .24s,border-color .2s}
+body.ch #cr {width:6px;height:6px;background:#fff}
+body.ch #crr{width:52px;height:52px;border-color:rgba(208,9,95,.85)}
+body.ck #cr {width:14px;height:14px;opacity:.5}
+
+:root{
+  --pk:#d0095f;--pk1:rgba(208,9,95,.1);--pk2:rgba(208,9,95,.2);
+  --d1:#0d0d0d;--d3:#1a1a1a;--d4:#212121;
+  --w1:#fff;--w2:rgba(255,255,255,.72);--w3:rgba(255,255,255,.38);
+  --b1:rgba(255,255,255,.06);--b2:rgba(255,255,255,.12);
+  --gn:#22c55e;--am:#f59e0b;
+}
+
+#stage{position:fixed;inset:0;background:var(--d1)}
+.sl{position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .28s;overflow:hidden;display:flex;flex-direction:column}
+.sl.on{opacity:1;pointer-events:auto}
+
+#pg {position:fixed;top:0;left:0;right:0;height:2px;background:rgba(255,255,255,.05);z-index:9999}
+#pgf{height:100%;background:var(--pk);transition:width .35s}
+
+#dots{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:5px;align-items:center;z-index:9998}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.18);transition:all .3s;flex-shrink:0;cursor:none}
+.dot.v{background:rgba(208,9,95,.38)}
+.dot.ac{width:22px;border-radius:3px;background:var(--pk);box-shadow:0 0 10px rgba(208,9,95,.55)}
+
+#nav{position:fixed;top:16px;right:16px;display:flex;align-items:center;gap:8px;z-index:9999}
+#nsc{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);font-variant-numeric:tabular-nums;letter-spacing:.06em}
+.nb{background:rgba(10,10,10,.88);border:1px solid rgba(255,255,255,.1);border-radius:28px;cursor:none;height:34px;padding:0 15px;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.55);font-family:'Red Hat Display',sans-serif;font-size:12px;font-weight:600;letter-spacing:.04em;transition:all .2s;white-space:nowrap;backdrop-filter:blur(10px)}
+.nb:hover{background:rgba(208,9,95,.13);border-color:rgba(208,9,95,.5);color:#fff;box-shadow:0 0 14px rgba(208,9,95,.18)}
+.nb:active{transform:scale(.94)}
+.nb svg{transition:transform .18s}
+#nbp:hover svg{transform:translateX(-2px)}
+#nbn:hover svg{transform:translateX(2px)}
+.nb.hi{opacity:0;pointer-events:none}
+
+#sbt{position:fixed;right:14px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;background:rgba(10,10,10,.9);border:1px solid rgba(255,255,255,.1);cursor:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);z-index:9001;transition:all .2s}
+#sbt:hover{background:var(--pk1);border-color:var(--pk2);color:var(--pk)}
+
+#sidebar{position:fixed;right:0;top:0;bottom:0;width:260px;background:rgba(8,8,8,.97);border-left:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column;z-index:9000;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);backdrop-filter:blur(20px)}
+#sidebar.op{transform:none}
+.sbh{padding:24px 20px 13px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sbh p{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--w3);margin-bottom:3px}
+.sbh strong{font-size:13px;color:var(--w1)}
+.sbsc{overflow-y:auto;flex:1;padding:6px 0}
+.sbsc::-webkit-scrollbar{width:2px}
+.sbsc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1)}
+.sba{padding:11px 20px 4px;font-size:9px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.sbb{display:flex;align-items:center;gap:9px;width:100%;padding:8px 20px;background:none;border:none;cursor:none;text-align:left;font-family:'Red Hat Display',sans-serif;font-size:12px;font-weight:500;color:var(--w3);transition:all .15s;border-left:2px solid transparent}
+.sbb:hover{background:rgba(255,255,255,.04);color:var(--w2)}
+.sbb.ac{background:var(--pk1);color:var(--pk);border-left-color:var(--pk);font-weight:700}
+.sbn{font-size:9px;font-weight:700;color:var(--pk);min-width:18px;font-variant-numeric:tabular-nums;opacity:.6}
+.sbb.ac .sbn{opacity:1}
+
+/* SLIDE BODY */
+.sw{flex:1;padding:48px 52px 36px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+
+/* TYPE */
+.eye{font-size:10px;font-weight:700;color:var(--pk);letter-spacing:.2em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;margin-bottom:10px}
+.eye::before{content:"";width:20px;height:2px;background:var(--pk)}
+h1{font-size:46px;font-weight:700;color:var(--w1);line-height:1.04;letter-spacing:-.025em;margin-bottom:20px}
+.tl{font-size:18px;line-height:1.7;color:var(--w2);font-weight:300}
+.tm{font-size:15px;line-height:1.65;color:var(--w2)}
+.ts{font-size:13px;line-height:1.6;color:var(--w2)}
+.tl strong,.tm strong,.ts strong{color:var(--w1);font-weight:500}
+
+/* ── UNIFORM TABLE — no text wrap, compact, elegant ── */
+.tb{width:100%;border-collapse:collapse}
+.tb th{text-align:left;padding:7px 14px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--w3);border-bottom:1px solid var(--b2);white-space:nowrap}
+.tb td{padding:10px 14px;border-bottom:1px solid var(--b1);transition:background .13s;font-size:14px;white-space:nowrap}
+.tb tr:hover td{background:rgba(255,255,255,.03)}
+.tb td.cc{font-weight:600;color:var(--w1)}
+.tb td.cv{color:var(--w2);font-variant-numeric:tabular-nums}
+.tb td.cl{color:var(--w3);font-size:12px}
+.tb tr:last-child td{border-bottom:none}
+.gb{display:inline-flex;align-items:center;padding:2px 9px;border-radius:5px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;transition:transform .13s}
+.tb tr:hover .gb{transform:scale(1.06)}
+.gb.n{background:rgba(208,9,95,.1);color:var(--pk)}
+.gb.p{background:rgba(34,197,94,.1);color:var(--gn)}
+.gb.z{background:rgba(255,255,255,.05);color:var(--w3)}
+
+/* ── UNIFORM CARD — standard across all slides ── */
+.card{background:var(--d3);border:1px solid var(--b2);border-radius:12px;padding:20px 22px;transition:border-color .2s,background .2s,transform .2s}
+.card:hover{border-color:rgba(255,255,255,.2);background:var(--d4)}
+.cup:hover{transform:translateY(-3px)}
+
+/* ── SECTION CARD — table inside card, consistent look ── */
+.sc{background:var(--d3);border:1px solid var(--b2);border-radius:12px;overflow:hidden;transition:border-color .2s}
+.sc:hover{border-color:rgba(255,255,255,.18)}
+.sc-head{padding:14px 18px 12px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--b1)}
+.sc-head .sc-icon{width:28px;height:28px;border-radius:7px;background:var(--pk1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc-head .sc-title{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--w3)}
+.sc .tb{margin:0}
+.sc .tb th{padding:6px 18px;font-size:8px}
+.sc .tb td{padding:9px 18px}
+.sc-note{padding:10px 18px 12px;background:rgba(34,197,94,.05);border-top:1px solid rgba(34,197,94,.12)}
+.sc-note p{font-size:12px;color:var(--gn)}
+
+/* PILLS */
+.pp{background:rgba(34,197,94,.1);color:var(--gn);border:1px solid rgba(34,197,94,.22);border-radius:5px;padding:4px 11px;font-size:12px;font-weight:600;transition:transform .14s;display:inline-block}
+.np{background:var(--pk1);color:var(--pk);border:1px solid var(--pk2);border-radius:5px;padding:4px 11px;font-size:12px;font-weight:600;transition:transform .14s;display:inline-block}
+.pp:hover,.np:hover{transform:translateY(-1px)}
+
+/* GAP BARS */
+.gw{display:flex;flex-direction:column;gap:10px}
+.gr{display:grid;grid-template-columns:200px 1fr 50px;gap:10px;align-items:center}
+.gr .lb{font-size:13px;color:var(--w2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gr .tr{height:4px;background:rgba(255,255,255,.06);border-radius:2px;position:relative;overflow:hidden}
+.gr .fi{position:absolute;left:0;top:0;bottom:0;background:var(--pk);border-radius:2px;width:0;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.sl.on .fi{width:var(--w)}
+.gr .pc{font-size:12px;font-weight:700;color:var(--pk);text-align:right;font-variant-numeric:tabular-nums}
+
+/* GAP CARD */
+.gap-card{background:var(--d3);border:1px solid var(--b2);border-radius:10px;padding:13px 16px;transition:background .2s,border-color .2s}
+.gap-card:hover{background:var(--d4);border-color:rgba(255,255,255,.18)}
+.gap-card .gc-name{font-size:14px;font-weight:600;color:var(--w1);margin-bottom:2px}
+.gap-card .gc-ref{font-size:11px;color:var(--w3);margin-bottom:7px}
+.gap-card .gc-row{display:flex;align-items:center;gap:10px}
+.gap-card .gc-bar{flex:1;height:5px;background:rgba(255,255,255,.06);border-radius:3px;position:relative;overflow:hidden}
+.gap-card .gc-fill{position:absolute;left:0;top:0;bottom:0;background:var(--pk);border-radius:3px;width:0;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.sl.on .gc-fill{width:var(--w)}
+.gap-card .gc-pct{font-size:15px;font-weight:700;color:var(--pk);min-width:42px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* ── CHIP EMPRESA — sequential glow, one at a time ── */
+@keyframes seqglow{
+  0%,14%,100%{box-shadow:0 0 0 0 rgba(208,9,95,0);border-color:rgba(208,9,95,.2)}
+  7%{box-shadow:0 0 16px 3px rgba(208,9,95,.32);border-color:rgba(208,9,95,.7)}
+}
+.ce{background:transparent;border:1px solid rgba(208,9,95,.2);color:var(--w1);border-radius:7px;padding:7px 15px;font-size:14px;font-weight:400;display:inline-block;transition:background .15s;animation:seqglow 14s ease-in-out infinite}
+.ce:hover{background:var(--pk1)}
+/* Each chip fires at a different slot of the 14s cycle */
+.ce:nth-child(1) {animation-delay:0s}
+.ce:nth-child(2) {animation-delay:1s}
+.ce:nth-child(3) {animation-delay:2s}
+.ce:nth-child(4) {animation-delay:3s}
+.ce:nth-child(5) {animation-delay:4s}
+.ce:nth-child(6) {animation-delay:5s}
+.ce:nth-child(7) {animation-delay:6s}
+.ce:nth-child(8) {animation-delay:7s}
+.ce:nth-child(9) {animation-delay:8s}
+.ce:nth-child(10){animation-delay:9s}
+.ce:nth-child(11){animation-delay:10s}
+.ce:nth-child(12){animation-delay:11s}
+.ce:nth-child(13){animation-delay:12s}
+.ce:nth-child(14){animation-delay:13s}
+
+/* LAYOUTS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.g2w{display:grid;grid-template-columns:1.25fr 1fr;gap:36px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:22px}
+.grow{flex:1}
+
+/* COVER */
+.cov{height:100%;display:flex;flex-direction:column;background:var(--d1);position:relative;overflow:hidden}
+.cov::before{content:"";position:absolute;right:-15vw;top:-15vh;width:65vw;height:65vw;background:radial-gradient(circle,rgba(208,9,95,.055) 0%,transparent 65%);pointer-events:none}
+.cov-bar{padding:28px 52px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.cpill{background:var(--pk1);color:var(--pk);padding:7px 18px;border-radius:36px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--pk2)}
+.cov-mid{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:0 8vw}
+.ctitle{font-size:120px;font-weight:300;line-height:.94;letter-spacing:-.04em;color:var(--w1)}
+.ctitle b{font-weight:700;color:var(--pk)}
+.csub{font-size:20px;color:var(--w3);margin-top:18px;font-weight:300}
+
+/* DIVIDER */
+.div-s{height:100%;display:flex;flex-direction:column;justify-content:center;padding:80px;background:#090909;position:relative;overflow:hidden}
+.div-s::after{content:"";position:absolute;left:-8vw;bottom:-8vh;width:55vw;height:55vw;background:radial-gradient(circle,rgba(208,9,95,.04) 0%,transparent 70%);pointer-events:none}
+.dn{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--pk);margin-bottom:16px}
+.dh{font-size:128px;font-weight:300;line-height:.94;letter-spacing:-.04em;color:var(--w1)}
+.ds{font-size:20px;color:var(--w3);margin-top:22px;font-weight:300;line-height:1.4;white-space:nowrap}
+
+/* CLOSING */
+.cls{height:100%;display:flex;flex-direction:column;background:var(--d1);position:relative;overflow:hidden}
+.cls::before{content:"";position:absolute;right:-12vw;bottom:-12vh;width:65vw;height:65vw;background:radial-gradient(circle,rgba(208,9,95,.05) 0%,transparent 65%);pointer-events:none}
+.cls-bar{padding:28px 52px;flex-shrink:0;display:flex;justify-content:flex-end}
+.cls-mid{flex:1;display:flex;align-items:center;padding:0 80px}
+.cls-h{font-size:108px;font-weight:700;line-height:1;letter-spacing:-.04em;color:var(--pk)}
+
+/* ENTRANCE */
+.sl.on .rc{animation:ri .38s ease both}
+.rc:nth-child(1){animation-delay:.04s!important}.rc:nth-child(2){animation-delay:.08s!important}
+.rc:nth-child(3){animation-delay:.12s!important}.rc:nth-child(4){animation-delay:.16s!important}
+.rc:nth-child(5){animation-delay:.2s!important} .rc:nth-child(6){animation-delay:.24s!important}
+.rc:nth-child(7){animation-delay:.28s!important}.rc:nth-child(8){animation-delay:.32s!important}
+@keyframes ri{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.logo{height:19px;flex-shrink:0}
+.lbl{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--w3)}
+</style>
+</head>
+<body>
+<div id="cr"></div>
+<div id="crr"></div>
+<div id="pg"><div id="pgf"></div></div>
+<div id="stage">
+
+<!-- ══ S01 CAPA ══ -->
+<div class="sl on" id="s1">
+<div class="cov">
+  <div class="cov-bar">
+    <span class="cpill">Gente &amp; Gestão · 2026</span>
+    <svg class="logo" viewBox="0 0 1870.6 662.7" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#d0095f" d="M1057,134.6c-70.1,0-101.6,28.3-101.6,86.4v62c0,38.6,12.5,64.1,42.9,76.1l-64,169h74.1l4.3-11.8c.1-.2.2-.5.3-.7l53.3-145.6h17.9V528.3h69V134.6H1057zM1084.2,316.6H1057c-23.9,0-33.2-13.6-33.2-33.7v-62c0-19.6,9.2-33.2,33.2-33.2h27.2V316.6z"/>
+      <path fill="#fff" d="M224.1,316.6h-69l.1-182.1h96.1c70.1,0,101.6,28.3,101.6,86.4v95.6h-68.5V221c0-19.6-9.2-33.2-33.2-33.2h-27.2V316.6z"/><path fill="#fff" d="M144.5,327.2h69v158.1h27.2c23.9,0,33.2-13.6,33.2-33.7V327.2h68.5v124.5c0,58.7-31.5,87-101.6,87h-96.1L144.5,327.2z"/>
+      <rect fill="#fff" x="395.2" y="134.6" width="69" height="182.1"/><rect fill="#fff" x="384.6" y="327.2" width="69" height="211.4"/>
+      <path fill="#fff" d="M631.7,316.6h-101c-26.8-27.1-32.7-52.6-32.7-100.5c0-56.5,31-84.2,99.5-84.2s99.5,27.7,99.5,84.2v61.4h-68.5v-61.4c0-18.5-8.7-31-31-31s-31,12.5-31,31c0,30.4,4.3,45.1,27.7,66.3L631.7,316.6z"/><path fill="#fff" d="M520,327.2h101l23.3,21.2c34.2,30.4,41.8,56,41.8,108.7c0,56.5-31,84.2-99.5,84.2s-99.5-27.7-99.5-84.2v-62h68.5v62c0,18.5,8.7,31,31,31s31-12.5,31-31c0-30.4-4.3-45.1-27.7-66.3l-61.4-55.4C525.4,332.6,522.6,329.9,520,327.2z"/>
+      <polygon fill="#fff" points="932.9,134.6 932.9,187.8 859,187.8 859,316.6 789.9,316.6 789.9,187.8 716,187.8 716,134.6"/><rect fill="#fff" x="779.3" y="327.2" width="69" height="211.4"/>
+      <path fill="#fff" d="M1595.7,306.1h-69V205.6c0-56.5,31-84.2,99.5-84.2s100,27.7,100,84.2v100.5h-69V205.6c0-18.5-8.7-31-31-31s-30.4,12.5-30.4,31V306.1z"/><path fill="#fff" d="M1516.1,446.6V316.7h69v129.9c0,18.5,8.2,31,30.4,31s31-12.5,31-31V316.7h69v129.9c0,56.5-31.5,84.2-100,84.2S1516.1,503.1,1516.1,446.6z"/>
+      <rect fill="#fff" x="1205.4" y="124" width="69" height="182.1"/><rect fill="#fff" x="1194.9" y="316.7" width="69" height="211.4"/>
+      <polygon fill="#fff" points="1437,306.1 1368,306.1 1368,177.3 1294.1,177.3 1294.1,124 1510.9,124 1510.9,177.3 1437,177.3"/><rect fill="#fff" x="1357.4" y="316.7" width="69" height="211.4"/>
+    </svg>
+  </div>
+  <div class="cov-mid">
+    <div class="ctitle">Benchmark<br><b>Salarial 2026</b></div>
+    <p class="csub">Competitividade da Estrutura de Remuneração e Posicionamento de Mercado</p>
+  </div>
+  <div style="height:5vh"></div>
+</div>
+</div>
+
+<!-- ══ S02 POR QUE ESTE ESTUDO ══ -->
+<div class="sl" id="s2">
+<div class="sw">
+  <div class="eye">Contexto</div>
+  <h1>Por que este estudo</h1>
+  <div class="g2 grow" style="align-items:stretch">
+    <div style="display:flex;flex-direction:column;gap:20px">
+      <p class="tl">À medida que o Distrito evolui como empresa de <strong>transformação cognitiva e inteligência artificial</strong>, é essencial garantir que a estrutura salarial esteja alinhada à estratégia do negócio e à realidade do mercado.</p>
+      <p class="tm">O objetivo não é apenas comparar salários — é entender onde estamos competitivos, onde existem riscos de retenção, quais funções são estratégicas e como direcionar investimentos de forma sustentável.</p>
+      <div class="card" style="margin-top:auto;border-left:3px solid var(--pk);border-radius:0 12px 12px 0;padding:22px 26px">
+        <p style="font-size:20px;color:var(--w2);line-height:1.6;font-weight:300">"A estrutura salarial deve ser um <strong>instrumento estratégico</strong>, não apenas um custo a ser gerenciado."</p>
+      </div>
+    </div>
+    <!-- 4 cards com ícone SVG de linha rosa -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px">
+
+      <div class="card cup" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:28px 20px">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--pk1);display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;color:var(--w1);margin-bottom:6px;line-height:1.2">Competitividade</p><p style="font-size:13px;color:var(--w3);line-height:1.55">Onde o Distrito está posicionado por área e nível</p></div>
+      </div>
+
+      <div class="card cup" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:28px 20px">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--pk1);display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;color:var(--w1);margin-bottom:6px;line-height:1.2">Riscos de Retenção</p><p style="font-size:13px;color:var(--w3);line-height:1.55">Cargos com maior probabilidade de perda de talento</p></div>
+      </div>
+
+      <div class="card cup" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:28px 20px">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--pk1);display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;color:var(--w1);margin-bottom:6px;line-height:1.2">Funções Estratégicas</p><p style="font-size:13px;color:var(--w3);line-height:1.55">Papéis de maior impacto no crescimento do negócio</p></div>
+      </div>
+
+      <div class="card cup" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;padding:28px 20px">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--pk1);display:flex;align-items:center;justify-content:center">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        </div>
+        <div><p style="font-size:17px;font-weight:600;color:var(--w1);margin-bottom:6px;line-height:1.2">Investimento Dirigido</p><p style="font-size:13px;color:var(--w3);line-height:1.55">Priorizar revisões por criticidade e escassez de mercado</p></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S03 EMPRESAS ══ -->
+<div class="sl" id="s3">
+<div class="sw">
+  <div class="eye">Metodologia</div>
+  <h1>Empresas do benchmark</h1>
+  <div class="g2w grow" style="align-items:start">
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div><p class="lbl" style="margin-bottom:10px">Tecnologia e Transformação</p><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="ce">FCamara</span><span class="ce">CI&T</span><span class="ce">Compass UOL</span><span class="ce">BRQ</span><span class="ce">Invillia</span><span class="ce">GFT</span><span class="ce">Zup</span><span class="ce">ioasys</span></div></div>
+      <div><p class="lbl" style="margin-bottom:10px">Consultoria e Transformação Digital</p><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="ce">Accenture Song</span><span class="ce">Deloitte Digital</span><span class="ce">EY Consulting</span></div></div>
+      <div><p class="lbl" style="margin-bottom:10px">IA, Dados e Analytics</p><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="ce">Indicium</span><span class="ce">Kunumi</span><span class="ce">NeuralMind</span></div></div>
+      <div><p class="lbl" style="margin-bottom:10px">Inovação e Ecossistema</p><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="ce">ACE Cortex</span><span class="ce">Liga Ventures</span><span class="ce">Cubo</span><span class="ce">Endeavor</span></div></div>
+    </div>
+    <div>
+      <p class="lbl" style="margin-bottom:14px">Critérios de seleção</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:13px;padding:13px 17px;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:9px;transition:background .15s,border-color .15s" onmouseenter="this.style.background='rgba(208,9,95,.05)';this.style.borderColor='var(--pk2)'" onmouseleave="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='var(--b1)'"><div style="width:4px;height:4px;border-radius:50%;background:var(--pk);flex-shrink:0"></div><span class="tm">Empresas entre <strong>50 e 500 colaboradores</strong></span></div>
+        <div style="display:flex;align-items:center;gap:13px;padding:13px 17px;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:9px;transition:background .15s,border-color .15s" onmouseenter="this.style.background='rgba(208,9,95,.05)';this.style.borderColor='var(--pk2)'" onmouseleave="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='var(--b1)'"><div style="width:4px;height:4px;border-radius:50%;background:var(--pk);flex-shrink:0"></div><span class="tm">Operação <strong>nacional</strong></span></div>
+        <div style="display:flex;align-items:center;gap:13px;padding:13px 17px;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:9px;transition:background .15s,border-color .15s" onmouseenter="this.style.background='rgba(208,9,95,.05)';this.style.borderColor='var(--pk2)'" onmouseleave="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='var(--b1)'"><div style="width:4px;height:4px;border-radius:50%;background:var(--pk);flex-shrink:0"></div><span class="tm"><strong>Forte componente tecnológico</strong></span></div>
+        <div style="display:flex;align-items:center;gap:13px;padding:13px 17px;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:9px;transition:background .15s,border-color .15s" onmouseenter="this.style.background='rgba(208,9,95,.05)';this.style.borderColor='var(--pk2)'" onmouseleave="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='var(--b1)'"><div style="width:4px;height:4px;border-radius:50%;background:var(--pk);flex-shrink:0"></div><span class="tm">Atuação em <strong>IA, inovação e transformação digital</strong></span></div>
+        <div style="display:flex;align-items:center;gap:13px;padding:13px 17px;background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:9px;transition:background .15s,border-color .15s" onmouseenter="this.style.background='rgba(208,9,95,.05)';this.style.borderColor='var(--pk2)'" onmouseleave="this.style.background='rgba(255,255,255,.03)';this.style.borderColor='var(--b1)'"><div style="width:4px;height:4px;border-radius:50%;background:var(--pk);flex-shrink:0"></div><span class="tm">Mercado <strong>São Paulo · CLT · 2026</strong></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S04 DIV -->
+<div class="sl" id="s4"><div class="div-s"><div class="dn">01</div><div class="dh" style="font-size:clamp(72px,9vw,128px);white-space:nowrap">Visão Geral</div><p class="ds">Distribuição dos cargos em relação ao mercado e principal conclusão estratégica</p></div></div>
+
+<!-- ══ S05 DIAGNÓSTICO ══ -->
+<div class="sl" id="s5">
+<div class="sw">
+  <div class="eye">Visão Geral</div>
+  <h1>Diagnóstico de posicionamento</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:10px;transition:background .2s" onmouseenter="this.style.background='rgba(34,197,94,.11)'" onmouseleave="this.style.background='rgba(34,197,94,.07)'"><span style="font-size:16px;font-weight:600;color:var(--gn)">Acima do mercado</span><span style="font-size:12px;color:var(--gn);opacity:.7">Casos pontuais</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;transition:background .2s" onmouseenter="this.style.background='rgba(245,158,11,.11)'" onmouseleave="this.style.background='rgba(245,158,11,.07)'"><span style="font-size:16px;font-weight:600;color:var(--am)">Alinhado ao mercado</span><span style="font-size:12px;color:var(--am);opacity:.7">Lideranças e especializações</span></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:rgba(208,9,95,.07);border:1px solid var(--pk2);border-radius:10px;transition:background .2s" onmouseenter="this.style.background='rgba(208,9,95,.11)'" onmouseleave="this.style.background='rgba(208,9,95,.07)'"><span style="font-size:16px;font-weight:600;color:var(--pk)">Abaixo do mercado</span><span style="font-size:12px;color:var(--pk);opacity:.7">Maioria dos cargos técnicos</span></div>
+      <div class="card" style="margin-top:6px"><p class="lbl" style="margin-bottom:8px">Conclusão estratégica</p><p class="tl">O Distrito é competitivo em <strong>liderança e gestão</strong>, mas apresenta defasagens relevantes em áreas ligadas à construção de produto, tecnologia, IA, crescimento e inteligência de mercado.</p></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:24px">
+      <div><p class="lbl" style="margin-bottom:10px">Áreas mais competitivas</p><div style="display:flex;flex-wrap:wrap;gap:7px"><span class="pp">Financeiro</span><span class="pp">Jurídico</span><span class="pp">Gente e Gestão</span><span class="pp">Dir. Tecnologia</span><span class="pp">Product Delivery Mgr</span><span class="pp">Educação Executiva</span></div></div>
+      <div><p class="lbl" style="margin-bottom:10px">Áreas com maior defasagem</p><div style="display:flex;flex-wrap:wrap;gap:7px"><span class="np">AI Factory</span><span class="np">Produto</span><span class="np">Tecnologia</span><span class="np">Marketing</span><span class="np">Growth</span><span class="np">Research</span><span class="np">CX Ops</span><span class="np">Pré-Vendas</span></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S06 GAPS ══ -->
+<div class="sl" id="s6">
+<div class="sw">
+  <div class="eye">Riscos de Retenção</div>
+  <h1>Maiores gaps identificados</h1>
+  <p style="font-size:14px;color:var(--w3);margin-bottom:18px;font-weight:300">Diferença entre o salário praticado no Distrito e a referência de mercado (São Paulo · CLT · 2026)</p>
+  <div class="g2 grow" style="align-items:start">
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="gap-card"><div class="gc-name">Engenheiro AI Junior</div><div class="gc-ref">R$ 4.200 praticado · R$ 10.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:58%"></div></div><div class="gc-pct">−58%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Dev. Frontend Pleno</div><div class="gc-ref">R$ 5.837 praticado · R$ 12.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:51%"></div></div><div class="gc-pct">−51%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Pré-Vendas Sênior</div><div class="gc-ref">R$ 6.395 praticado · R$ 13.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:51%"></div></div><div class="gc-pct">−51%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Analista de Dados Sênior</div><div class="gc-ref">R$ 8.028 praticado · R$ 16.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:50%"></div></div><div class="gc-pct">−50%</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="gap-card"><div class="gc-name">Analista Marketing Sênior</div><div class="gc-ref">R$ 5.700 praticado · R$ 11.500 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:50%"></div></div><div class="gc-pct">−50%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Coordenador Research</div><div class="gc-ref">R$ 8.500 praticado · R$ 16.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:47%"></div></div><div class="gc-pct">−47%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Líder em AI</div><div class="gc-ref">R$ 18.000 praticado · R$ 32.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:44%"></div></div><div class="gc-pct">−44%</div></div></div>
+      <div class="gap-card"><div class="gc-name">Product Owner Sênior</div><div class="gc-ref">R$ 12.000 praticado · R$ 20.000 mercado</div><div class="gc-row"><div class="gc-bar"><div class="gc-fill" style="--w:40%"></div></div><div class="gc-pct">−40%</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S07 DIV -->
+<div class="sl" id="s7"><div class="div-s"><div class="dn">02</div><div class="dh" style="font-size:clamp(52px,6.5vw,100px);white-space:nowrap">Benchmark Completo</div><p class="ds">Análise de todos os cargos</p></div></div>
+
+<!-- ══ S08 AI FACTORY ══ -->
+<div class="sl" id="s8">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>AI Factory</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><span class="sc-title">Engenharia de AI &amp; Produto</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Nível</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Engenheiro AI</td><td class="cl">Junior</td><td class="cv">R$ 4.200</td><td class="cv">R$ 10.000</td><td><span class="gb n">−58%</span></td></tr>
+        <tr><td class="cc">Engenheiro AI</td><td class="cl">Pleno</td><td class="cv">R$ 16.000</td><td class="cv">R$ 16.000</td><td><span class="gb z">0%</span></td></tr>
+        <tr><td class="cc">Engenheiro AI</td><td class="cl">Sênior</td><td class="cv">R$ 17–22k</td><td class="cv">R$ 27.000</td><td><span class="gb n">−19 a −37%</span></td></tr>
+        <tr><td class="cc">Líder em AI</td><td class="cl">Liderança</td><td class="cv">R$ 18.000</td><td class="cv">R$ 32.000</td><td><span class="gb n">−44%</span></td></tr>
+        <tr><td class="cc">Product Designer</td><td class="cl">Pleno</td><td class="cv">R$ 7.000</td><td class="cv">R$ 10.000</td><td><span class="gb n">−30%</span></td></tr>
+        <tr><td class="cc">Product Owner</td><td class="cl">Pleno</td><td class="cv">R$ 9–10k</td><td class="cv">R$ 13.000</td><td><span class="gb n">−25 a −33%</span></td></tr>
+        <tr><td class="cc">Product Owner</td><td class="cl">Sênior</td><td class="cv">R$ 12.000</td><td class="cv">R$ 20.000</td><td><span class="gb n">−40%</span></td></tr>
+        <tr><td class="cc">Product Manager</td><td class="cl">Pleno</td><td class="cv">R$ 11.000</td><td class="cv">R$ 17.000</td><td><span class="gb n">−35%</span></td></tr>
+        <tr><td class="cc">Product Manager</td><td class="cl">Sênior</td><td class="cv">R$ 17.500</td><td class="cv">R$ 26.000</td><td><span class="gb n">−33%</span></td></tr>
+        <tr><td class="cc">Product Delivery Manager</td><td class="cl">Gestão</td><td class="cv">R$ 25.000</td><td class="cv">R$ 24.000</td><td><span class="gb p">+4%</span></td></tr>
+        <tr><td class="cc">AI Director</td><td class="cl">Diretoria</td><td class="cv">R$ 35.000</td><td class="cv">R$ 50.000</td><td><span class="gb n">−30%</span></td></tr>
+        <tr><td class="cc">Diretor de Tecnologia</td><td class="cl">Diretoria</td><td class="cv">R$ 50.000</td><td class="cv">R$ 50.000</td><td><span class="gb z">0%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Área mais crítica</p>
+        <p class="tm">AI Factory concentra os maiores gaps da empresa. <strong style="color:var(--pk)">Engenheiro AI Junior com −58%</strong> representa o maior risco imediato de contratação e retenção.</p>
+      </div>
+      <div class="card">
+        <p class="lbl" style="margin-bottom:8px">Destaques positivos</p>
+        <p class="tm">Engenheiro AI Pleno e Diretor de Tecnologia alinhados ao mercado. Product Delivery Manager <strong style="color:var(--gn)">+4% acima</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S09 TECNOLOGIA ══ -->
+<div class="sl" id="s9">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>Tecnologia</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><span class="sc-title">Desenvolvimento e Engenharia</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Dev. Frontend Pleno</td><td class="cv">R$ 5.837</td><td class="cv">R$ 12.000</td><td><span class="gb n">−51%</span></td></tr>
+        <tr><td class="cc">Desenvolvedor Sênior</td><td class="cv">R$ 13.023</td><td class="cv">R$ 20.000</td><td><span class="gb n">−35%</span></td></tr>
+        <tr><td class="cc">Líder Técnico Sênior</td><td class="cv">R$ 19.649</td><td class="cv">R$ 26.000</td><td><span class="gb n">−24%</span></td></tr>
+        <tr><td class="cc">CTO</td><td class="cv">R$ 29.083</td><td class="cv">R$ 60.000</td><td><span class="gb n">−52%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Alerta crítico · CTO</p>
+        <p class="tm">CTO está <strong style="color:var(--pk)">52% abaixo</strong> do mercado — maior gap individual de toda a liderança técnica. Risco alto de perda da posição mais estratégica da área.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S10 MARKETING ══ -->
+<div class="sl" id="s10">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>Marketing &amp; Growth</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><span class="sc-title">Marketing, Growth e Performance</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Analista de Conteúdo Pleno</td><td class="cv">R$ 5.000</td><td class="cv">R$ 7.000</td><td><span class="gb n">−29%</span></td></tr>
+        <tr><td class="cc">Analista Marketing Sênior</td><td class="cv">R$ 5.700</td><td class="cv">R$ 11.500</td><td><span class="gb n">−50%</span></td></tr>
+        <tr><td class="cc">Analista Growth Pleno</td><td class="cv">R$ 5.000</td><td class="cv">R$ 9.000</td><td><span class="gb n">−44%</span></td></tr>
+        <tr><td class="cc">Analista Mídia e Performance</td><td class="cv">R$ 4.000</td><td class="cv">R$ 8.500</td><td><span class="gb n">−53%</span></td></tr>
+        <tr><td class="cc">Designer Pleno</td><td class="cv">R$ 5.307</td><td class="cv">R$ 8.000</td><td><span class="gb n">−34%</span></td></tr>
+        <tr><td class="cc">Gerente de Marketing</td><td class="cv">R$ 15.868</td><td class="cv">R$ 24.000</td><td><span class="gb n">−34%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Padrão sistêmico</p>
+        <p class="tm">Gap médio de <strong style="color:var(--pk)">41%</strong> — o maior entre todas as áreas comerciais. Todos os analistas abaixo da mediana do mercado.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S11 ESTRATÉGIA ══ -->
+<div class="sl" id="s11">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>Estratégia e Transformação</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div><span class="sc-title">Estratégia, CX e Inovação</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Analista de Inovação</td><td class="cv">R$ 10.000</td><td class="cv">R$ 9.000</td><td><span class="gb p">+11%</span></td></tr>
+        <tr><td class="cc">Analista CX Junior (1)</td><td class="cv">R$ 4.061</td><td class="cv">R$ 5.500</td><td><span class="gb n">−26%</span></td></tr>
+        <tr><td class="cc">Analista CX Junior (2)</td><td class="cv">R$ 4.523</td><td class="cv">R$ 5.500</td><td><span class="gb n">−18%</span></td></tr>
+        <tr><td class="cc">Analista CX Sênior (1)</td><td class="cv">R$ 8.500</td><td class="cv">R$ 10.500</td><td><span class="gb n">−19%</span></td></tr>
+        <tr><td class="cc">Analista CX Sênior (2)</td><td class="cv">R$ 6.500</td><td class="cv">R$ 10.500</td><td><span class="gb n">−38%</span></td></tr>
+        <tr><td class="cc">Analista de Projetos Jr</td><td class="cv">R$ 4.243</td><td class="cv">R$ 5.000</td><td><span class="gb n">−15%</span></td></tr>
+        <tr><td class="cc">Especialista em Inovação</td><td class="cv">R$ 11.000</td><td class="cv">R$ 16.000</td><td><span class="gb n">−31%</span></td></tr>
+        <tr><td class="cc">Gerente de Contas Sênior</td><td class="cv">R$ 18.139</td><td class="cv">R$ 18.000</td><td><span class="gb p">+1%</span></td></tr>
+        <tr><td class="cc">Gerente de Inovação</td><td class="cv">R$ 16.500</td><td class="cv">R$ 27.000</td><td><span class="gb n">−39%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid rgba(34,197,94,.5);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Pontos positivos</p>
+        <p class="tm">Analista de Inovação <strong style="color:var(--gn)">+11%</strong> e Gerente de Contas <strong style="color:var(--gn)">+1%</strong> acima do mercado.</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Atenção</p>
+        <p class="tm">Gerente de Inovação com gap de <strong style="color:var(--pk)">−39%</strong> — risco relevante para a liderança da área.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S12 ECOSSISTEMA ══ -->
+<div class="sl" id="s12">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>Ecossistema &amp; Vendas</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="sc">
+        <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><span class="sc-title">Ecossistema</span></div>
+        <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+          <tr><td class="cc">Analista Operações Jr</td><td class="cv">R$ 3.135</td><td class="cv">R$ 4.500</td><td><span class="gb n">−30%</span></td></tr>
+          <tr><td class="cc">Analista Comunidade Sr</td><td class="cv">R$ 7.000</td><td class="cv">R$ 10.000</td><td><span class="gb n">−30%</span></td></tr>
+          <tr><td class="cc">Executiva de Vendas Pl</td><td class="cv">R$ 7.500</td><td class="cv">R$ 9.500</td><td><span class="gb n">−21%</span></td></tr>
+          <tr><td class="cc">Gerente Ecossistema Sr</td><td class="cv">R$ 18.000</td><td class="cv">R$ 24.000</td><td><span class="gb n">−25%</span></td></tr>
+        </tbody></table>
+      </div>
+      <div class="sc">
+        <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><span class="sc-title">Vendas</span></div>
+        <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+          <tr><td class="cc">Pré-Vendas Sênior</td><td class="cv">R$ 6.395</td><td class="cv">R$ 13.000</td><td><span class="gb n">−51%</span></td></tr>
+          <tr><td class="cc">Innovation AI Biz Dev</td><td class="cv">R$ 12.707</td><td class="cv">R$ 17.000</td><td><span class="gb n">−25%</span></td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Atenção · Pré-Vendas</p>
+        <p class="tm">Gap de <strong style="color:var(--pk)">51%</strong> compromete diretamente a geração de pipeline comercial do Distrito.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S13 RESEARCH ══ -->
+<div class="sl" id="s13">
+<div class="sw">
+  <div class="eye">Benchmark Completo</div>
+  <h1>Research</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><span class="sc-title">Inteligência e Research</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Estagiário</td><td class="cv">R$ 1.700</td><td class="cv">R$ 2.300</td><td><span class="gb n">−26%</span></td></tr>
+        <tr><td class="cc">Analista Research Junior</td><td class="cv">R$ 3.518</td><td class="cv">R$ 5.000</td><td><span class="gb n">−30%</span></td></tr>
+        <tr><td class="cc">Coordenador Research</td><td class="cv">R$ 8.500</td><td class="cv">R$ 16.000</td><td><span class="gb n">−47%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Atenção · Coordenador</p>
+        <p class="tm">Gap de <strong style="color:var(--pk)">47%</strong> representa risco de perda de inteligência estratégica — cargo central para o posicionamento do Distrito.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S14 FINANCEIRO & JURÍDICO ══ -->
+<div class="sl" id="s14">
+<div class="sw">
+  <div class="eye">Benchmark Completo · Áreas Cross</div>
+  <h1>Financeiro &amp; Jurídico</h1>
+  <div class="g2 grow" style="align-items:start">
+
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><span class="sc-title">Financeiro</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Analista Administrativo Pl</td><td class="cv">R$ 5.000</td><td class="cv">R$ 6.000</td><td><span class="gb n">−17%</span></td></tr>
+        <tr><td class="cc">Analista Financeiro Pl</td><td class="cv">R$ 5.528</td><td class="cv">R$ 7.000</td><td><span class="gb n">−21%</span></td></tr>
+        <tr><td class="cc">Gerente Financeiro</td><td class="cv">R$ 19.649</td><td class="cv">R$ 22.000</td><td><span class="gb n">−11%</span></td></tr>
+      </tbody></table>
+      <div class="sc-note"><p>Menor gap médio de toda a empresa</p></div>
+    </div>
+
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="sc-title">Jurídico</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Gerente Jurídico</td><td class="cv">R$ 18.649</td><td class="cv">R$ 25.000</td><td><span class="gb n">−25%</span></td></tr>
+      </tbody></table>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══ S14b GENTE E GESTÃO ══ -->
+<div class="sl" id="s14b">
+<div class="sw">
+  <div class="eye">Benchmark Completo · Áreas Cross</div>
+  <h1>Gente e Gestão</h1>
+  <div class="g2 grow" style="align-items:start">
+
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="sc-title">Gente e Gestão</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Analista de Gente e Gestão Jr</td><td class="cv">R$ 3.715</td><td class="cv">R$ 5.000</td><td><span class="gb n">−26%</span></td></tr>
+        <tr><td class="cc">Analista de Gente e Gestão Pl</td><td class="cv">R$ 7.429</td><td class="cv">R$ 7.500</td><td><span class="gb n">−1%</span></td></tr>
+        <tr><td class="cc">Gerente de Gente e Gestão</td><td class="cv">R$ 19.649</td><td class="cv">R$ 24.000</td><td><span class="gb n">−18%</span></td></tr>
+      </tbody></table>
+      <div class="sc-note"><p>Nível Pleno praticamente alinhado ao mercado (−1%)</p></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid rgba(34,197,94,.5);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Leitura</p>
+        <p class="tm">Área com gaps moderados. O nível Pleno está praticamente alinhado ao mercado — <strong style="color:var(--gn)">apenas −1%</strong>. Ajuste prioritário no nível Junior.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══ S15 CX OPS ══ -->
+<div class="sl" id="s15">
+<div class="sw">
+  <div class="eye">Benchmark Completo · Áreas Cross</div>
+  <h1>CX Ops</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="sc-title">Customer Experience Operations</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Analista Suporte e Trein. Pl</td><td class="cv">R$ 6.368</td><td class="cv">R$ 7.000</td><td><span class="gb n">−9%</span></td></tr>
+        <tr><td class="cc">Analista de Dados Sênior</td><td class="cv">R$ 8.028</td><td class="cv">R$ 16.000</td><td><span class="gb n">−50%</span></td></tr>
+        <tr><td class="cc">Coordenadora CX Ops</td><td class="cv">R$ 9.700</td><td class="cv">R$ 15.000</td><td><span class="gb n">−35%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Atenção · Dados</p>
+        <p class="tm">Analista de Dados com gap de <strong style="color:var(--pk)">50%</strong> — risco crítico de retenção dentro de CX Ops.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S16 EDUCAÇÃO ══ -->
+<div class="sl" id="s16">
+<div class="sw">
+  <div class="eye">Benchmark Completo · Áreas Cross</div>
+  <h1>Educação</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><span class="sc-title">Educação Executiva</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">Executiva de Vendas Jr</td><td class="cv">R$ 6.000</td><td class="cv">R$ 5.500</td><td><span class="gb p">+9%</span></td></tr>
+        <tr><td class="cc">Analista Sucesso Educ. Sr</td><td class="cv">R$ 7.500</td><td class="cv">R$ 10.500</td><td><span class="gb n">−29%</span></td></tr>
+        <tr><td class="cc">Especialista Educ. Executiva</td><td class="cv">R$ 14.500</td><td class="cv">R$ 14.000</td><td><span class="gb p">+4%</span></td></tr>
+        <tr><td class="cc">Gerente Educação</td><td class="cv">R$ 18.000</td><td class="cv">R$ 22.000</td><td><span class="gb n">−18%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="border-left:3px solid rgba(34,197,94,.5);border-radius:0 12px 12px 0">
+        <p class="lbl" style="margin-bottom:8px">Referência positiva</p>
+        <p class="tm">Educação tem dois cargos <strong style="color:var(--gn)">acima do mercado</strong> — Executiva de Vendas Jr <strong style="color:var(--gn)">+9%</strong> e Especialista <strong style="color:var(--gn)">+4%</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S17 C-LEVEL ══ -->
+<div class="sl" id="s17">
+<div class="sw">
+  <div class="eye">Benchmark Completo · Liderança Executiva</div>
+  <h1>C-Level</h1>
+  <div class="g2 grow" style="align-items:start">
+    <div class="sc">
+      <div class="sc-head"><div class="sc-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d0095f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><span class="sc-title">Liderança Executiva</span></div>
+      <table class="tb"><thead><tr><th>Cargo</th><th>Distrito</th><th>Mercado</th><th>Gap</th></tr></thead><tbody>
+        <tr><td class="cc">COO</td><td class="cv">R$ 32.000</td><td class="cv">R$ 60.000</td><td><span class="gb n">−47%</span></td></tr>
+        <tr><td class="cc">CRO</td><td class="cv">R$ 45.000</td><td class="cv">R$ 55.000</td><td><span class="gb n">−18%</span></td></tr>
+        <tr><td class="cc">CEO</td><td class="cv">R$ 45.000</td><td class="cv">R$ 80.000</td><td><span class="gb n">−44%</span></td></tr>
+        <tr><td class="cc">Diretor de Tecnologia</td><td class="cv">R$ 50.000</td><td class="cv">R$ 50.000</td><td><span class="gb z">0%</span></td></tr>
+        <tr><td class="cc">AI Director</td><td class="cv">R$ 35.000</td><td class="cv">R$ 50.000</td><td><span class="gb n">−30%</span></td></tr>
+      </tbody></table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card" style="display:flex;justify-content:space-around;align-items:center;padding:26px">
+        <div style="text-align:center"><p class="lbl" style="margin-bottom:8px">CEO</p><p style="font-size:52px;font-weight:700;color:var(--pk);letter-spacing:-.04em;line-height:1">−44%</p><p style="font-size:11px;color:var(--w3);margin-top:5px">R$ 45k vs R$ 80k</p></div>
+        <div style="width:1px;height:56px;background:var(--b2)"></div>
+        <div style="text-align:center"><p class="lbl" style="margin-bottom:8px">COO</p><p style="font-size:52px;font-weight:700;color:var(--pk);letter-spacing:-.04em;line-height:1">−47%</p><p style="font-size:11px;color:var(--w3);margin-top:5px">R$ 32k vs R$ 60k</p></div>
+        <div style="width:1px;height:56px;background:var(--b2)"></div>
+        <div style="text-align:center"><p class="lbl" style="margin-bottom:8px">Dir. Tecnologia</p><p style="font-size:52px;font-weight:700;color:var(--gn);letter-spacing:-.04em;line-height:1">0%</p><p style="font-size:11px;color:var(--w3);margin-top:5px">R$ 50k vs R$ 50k</p></div>
+      </div>
+      <div class="card"><p class="lbl" style="margin-bottom:7px">Observação</p><p class="tm">O Diretor de Tecnologia é o único cargo de C-Level alinhado ao mercado. CEO e COO apresentam gaps significativos que merecem atenção no planejamento estratégico.</p></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- S18 DIV -->
+<div class="sl" id="s18"><div class="div-s"><div class="dn">03</div><div class="dh">Conclusão</div><p class="ds">Três áreas prioritárias de ação e próximos passos</p></div></div>
+
+<!-- ══ S19 CONCLUSÃO ══ -->
+<div class="sl" id="s19">
+<div class="sw">
+  <div class="eye">Conclusão</div>
+  <h1>Conclusão</h1>
+  <div class="g2 grow" style="align-items:stretch">
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:20px">
+      <p class="tl">O benchmark demonstra que o Distrito possui estrutura salarial relativamente <strong>equilibrada em posições de gestão e liderança</strong>, mas apresenta defasagens concentradas em áreas ligadas à construção de produto, tecnologia, IA, marketing, pesquisa e crescimento.</p>
+      <p class="tl">A recomendação não é uma revisão salarial ampla, mas uma <strong>estratégia direcionada para funções críticas ao negócio</strong>, priorizando onde há maior escassez de talento e maior impacto na capacidade de crescimento.</p>
+      <div class="card" style="border-left:3px solid var(--pk);border-radius:0 12px 12px 0;padding:18px 22px">
+        <p class="lbl" style="margin-bottom:5px">Próximo passo</p>
+        <p class="tm">Definir budget de revisão e cronograma por grupo de criticidade, priorizando posições com gap acima de 40%.</p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;justify-content:center;gap:12px">
+      <p class="lbl" style="margin-bottom:4px">Três áreas prioritárias de ação</p>
+      <div class="card" style="display:flex;align-items:center;gap:18px;padding:20px 22px">
+        <div style="font-size:36px;font-weight:700;color:var(--pk);letter-spacing:-.03em;min-width:50px;line-height:1">01</div>
+        <div style="width:1px;height:40px;background:var(--b2);flex-shrink:0"></div>
+        <p class="tm">Revisão da trilha de <strong>AI Factory</strong> — de Junior a Líder</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:18px;padding:20px 22px">
+        <div style="font-size:36px;font-weight:700;color:var(--pk);letter-spacing:-.03em;min-width:50px;line-height:1">02</div>
+        <div style="width:1px;height:40px;background:var(--b2);flex-shrink:0"></div>
+        <p class="tm">Reposicionamento das funções de <strong>Tecnologia</strong> — especialmente Devs e CTO</p>
+      </div>
+      <div class="card" style="display:flex;align-items:center;gap:18px;padding:20px 22px">
+        <div style="font-size:36px;font-weight:700;color:var(--pk);letter-spacing:-.03em;min-width:50px;line-height:1">03</div>
+        <div style="width:1px;height:40px;background:var(--b2);flex-shrink:0"></div>
+        <p class="tm">Correção estrutural no time de <strong>Marketing &amp; Growth</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══ S20 CLOSING ══ -->
+<div class="sl" id="s20">
+<div class="cls">
+  <div class="cls-bar">
+    <svg class="logo" viewBox="0 0 1870.6 662.7" style="opacity:.25" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#d0095f" d="M1057,134.6c-70.1,0-101.6,28.3-101.6,86.4v62c0,38.6,12.5,64.1,42.9,76.1l-64,169h74.1l4.3-11.8c.1-.2.2-.5.3-.7l53.3-145.6h17.9V528.3h69V134.6H1057zM1084.2,316.6H1057c-23.9,0-33.2-13.6-33.2-33.7v-62c0-19.6,9.2-33.2,33.2-33.2h27.2V316.6z"/>
+      <path fill="#fff" d="M224.1,316.6h-69l.1-182.1h96.1c70.1,0,101.6,28.3,101.6,86.4v95.6h-68.5V221c0-19.6-9.2-33.2-33.2-33.2h-27.2V316.6z"/><path fill="#fff" d="M144.5,327.2h69v158.1h27.2c23.9,0,33.2-13.6,33.2-33.7V327.2h68.5v124.5c0,58.7-31.5,87-101.6,87h-96.1L144.5,327.2z"/>
+      <rect fill="#fff" x="395.2" y="134.6" width="69" height="182.1"/><rect fill="#fff" x="384.6" y="327.2" width="69" height="211.4"/>
+      <path fill="#fff" d="M631.7,316.6h-101c-26.8-27.1-32.7-52.6-32.7-100.5c0-56.5,31-84.2,99.5-84.2s99.5,27.7,99.5,84.2v61.4h-68.5v-61.4c0-18.5-8.7-31-31-31s-31,12.5-31,31c0,30.4,4.3,45.1,27.7,66.3L631.7,316.6z"/><path fill="#fff" d="M520,327.2h101l23.3,21.2c34.2,30.4,41.8,56,41.8,108.7c0,56.5-31,84.2-99.5,84.2s-99.5-27.7-99.5-84.2v-62h68.5v62c0,18.5,8.7,31,31,31s31-12.5,31-31c0-30.4-4.3-45.1-27.7-66.3l-61.4-55.4C525.4,332.6,522.6,329.9,520,327.2z"/>
+      <polygon fill="#fff" points="932.9,134.6 932.9,187.8 859,187.8 859,316.6 789.9,316.6 789.9,187.8 716,187.8 716,134.6"/><rect fill="#fff" x="779.3" y="327.2" width="69" height="211.4"/>
+      <path fill="#fff" d="M1595.7,306.1h-69V205.6c0-56.5,31-84.2,99.5-84.2s100,27.7,100,84.2v100.5h-69V205.6c0-18.5-8.7-31-31-31s-30.4,12.5-30.4,31V306.1z"/><path fill="#fff" d="M1516.1,446.6V316.7h69v129.9c0,18.5,8.2,31,30.4,31s31-12.5,31-31V316.7h69v129.9c0,56.5-31.5,84.2-100,84.2S1516.1,503.1,1516.1,446.6z"/>
+      <rect fill="#fff" x="1205.4" y="124" width="69" height="182.1"/><rect fill="#fff" x="1194.9" y="316.7" width="69" height="211.4"/>
+      <polygon fill="#fff" points="1437,306.1 1368,306.1 1368,177.3 1294.1,177.3 1294.1,124 1510.9,124 1510.9,177.3 1437,177.3"/><rect fill="#fff" x="1357.4" y="316.7" width="69" height="211.4"/>
+    </svg>
+  </div>
+  <div class="cls-mid">
+    <div>
+      <div class="cls-h">Obrigada.</div>
+      <p style="font-size:22px;color:var(--w3);margin-top:18px;font-weight:300;letter-spacing:.02em">Time de Gente e Gestão</p>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /stage -->
+
+<button id="sbt" aria-label="Menu"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="1" y1="2" x2="11" y2="2"/><line x1="1" y1="8" x2="11" y2="8"/></svg></button>
+
+<div id="sidebar">
+  <div class="sbh"><p>Navegação</p><strong>Benchmark Salarial 2026</strong></div>
+  <div class="sbsc">
+    <div class="sba">Introdução</div>
+    <button class="sbb ac" data-s="1"><span class="sbn">01</span>Capa</button>
+    <button class="sbb" data-s="2"><span class="sbn">02</span>Por que este estudo</button>
+    <button class="sbb" data-s="3"><span class="sbn">03</span>Empresas do benchmark</button>
+    <div class="sba">01 · Visão Geral</div>
+    <button class="sbb" data-s="5"><span class="sbn">05</span>Diagnóstico</button>
+    <button class="sbb" data-s="6"><span class="sbn">06</span>Maiores gaps</button>
+    <div class="sba">02 · Benchmark Completo</div>
+    <button class="sbb" data-s="8"><span class="sbn">08</span>AI Factory</button>
+    <button class="sbb" data-s="9"><span class="sbn">09</span>Tecnologia</button>
+    <button class="sbb" data-s="10"><span class="sbn">10</span>Marketing &amp; Growth</button>
+    <button class="sbb" data-s="11"><span class="sbn">11</span>Estratégia</button>
+    <button class="sbb" data-s="12"><span class="sbn">12</span>Ecossistema &amp; Vendas</button>
+    <button class="sbb" data-s="13"><span class="sbn">13</span>Research</button>
+    <button class="sbb" data-s="14"><span class="sbn">14</span>Financeiro &amp; Jurídico</button>
+    <button class="sbb" data-s="14b"><span class="sbn">15</span>Gente e Gestão</button>
+    <button class="sbb" data-s="15"><span class="sbn">16</span>CX Ops</button>
+    <button class="sbb" data-s="16"><span class="sbn">17</span>Educação</button>
+    <button class="sbb" data-s="17"><span class="sbn">18</span>C-Level</button>
+    <div class="sba">03 · Encerramento</div>
+    <button class="sbb" data-s="19"><span class="sbn">19</span>Conclusão</button>
+    <button class="sbb" data-s="20"><span class="sbn">20</span>Encerramento</button>
+  </div>
+</div>
+
+<div id="nav">
+  <span id="nsc">1 / 21</span>
+  <button class="nb hi" id="nbp"><svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>Anterior</button>
+  <button class="nb" id="nbn">Próximo<svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg></button>
+</div>
+
+<div id="dots"></div>
+
+<script>
+const SLIDES=['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','s12','s13','s14','s14b','s15','s16','s17','s18','s19','s20'];
+const T=SLIDES.length;let curIdx=0,sop=false;
+const DE=document.getElementById('dots');
+for(let i=0;i<T;i++){const d=document.createElement('span');d.className='dot'+(i===0?' ac':'');d.dataset.i=i;d.addEventListener('click',()=>goTo(i));DE.appendChild(d);}
+function ud(){DE.querySelectorAll('.dot').forEach((d,i)=>{d.className='dot'+(i===curIdx?' ac':(i<curIdx?' v':''));});}
+function goTo(n){
+  n=Math.max(0,Math.min(T-1,n));
+  document.getElementById(SLIDES[curIdx]).classList.remove('on');curIdx=n;
+  document.getElementById(SLIDES[curIdx]).classList.add('on');
+  document.getElementById('nsc').textContent=(curIdx+1)+' / '+T;
+  document.getElementById('pgf').style.width=(((curIdx+1)/T)*100)+'%';
+  document.getElementById('nbp').classList.toggle('hi',curIdx===0);
+  document.getElementById('nbn').classList.toggle('hi',curIdx===T-1);
+  ud();document.querySelectorAll('.sbb[data-s]').forEach(b=>b.classList.toggle('ac',b.dataset.s===SLIDES[curIdx]));
+}
+document.getElementById('nbp').addEventListener('click',()=>goTo(curIdx-1));
+document.getElementById('nbn').addEventListener('click',()=>goTo(curIdx+1));
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();goTo(curIdx+1);}
+  if(e.key==='ArrowLeft'){e.preventDefault();goTo(curIdx-1);}
+  if(e.key==='Escape')toggleSb(false);
+});
+document.querySelectorAll('.sbb[data-s]').forEach(b=>b.addEventListener('click',()=>{const idx=SLIDES.indexOf(b.dataset.s);if(idx>=0)goTo(idx);}));
+function toggleSb(f){sop=f!==undefined?f:!sop;document.getElementById('sidebar').classList.toggle('op',sop);document.getElementById('sbt').style.right=sop?'268px':'14px';}
+document.getElementById('sbt').addEventListener('click',()=>toggleSb());
+const CE=document.getElementById('cr'),CR=document.getElementById('crr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;CE.style.left=mx+'px';CE.style.top=my+'px';});
+(function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;CR.style.left=rx+'px';CR.style.top=ry+'px';requestAnimationFrame(a);})();
+document.querySelectorAll('button,.card,.sc,.ce,.rc,.sbb,.pp,.np,.dot,.gap-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
+});
+document.addEventListener('mousedown',()=>document.body.classList.add('ck'));
+document.addEventListener('mouseup',()=>document.body.classList.remove('ck'));
+document.getElementById('pgf').style.width=((1/T)*100)+'%';
+document.getElementById('nsc').textContent='1 / '+T;
+</script>
+</body>
+</html>
